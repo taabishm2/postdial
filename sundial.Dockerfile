@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-ENV PKG_CONFIG_PATH=/usr/local/grpc/lib/pkgconfig \
+ENV PKG_CONFIG_PATH=/root/grpc/third_party/re2:/root/grpc/third_party/bloaty/third_party/re2:/usr/local/grpc/lib/pkgconfig \
     LD_LIBRARY_PATH=/root/Sundial-Private/src/lib:/usr/local/lib:$LD_LIBRARY_PATH \
     PATH=/root/cmake/bin:$PATH \
     MY_INSTALL_DIR=/root/cmake
@@ -127,7 +127,19 @@ RUN cd /etc/ld.so.conf.d && echo "$/root/Sundial-Private/src/libs/" | sudo tee -
     /sbin/ldconfig
 
 RUN cd /root/Sundial-Private && python3 install.py install_local 0 2> /install_local.log
-# RUN cd /root/Sundial-Private/src/proto && protoc --grpc_out=../transport/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` --cpp_out=../transport sundial.proto
+RUN cd /root/Sundial-Private/src/proto && protoc --grpc_out=../transport/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` --cpp_out=../transport sundial.proto
+# Setup cpp_redis
+RUN cd /root/Sundial-Private/ && git submodule init && git submodule update && \
+    cd /root/Sundial-Private/cpp_redis && \
+    git reset --hard ab5ea8638bc51e3d407b0045aceb5c5fd3218aa0 && \
+    git submodule init && git submodule update && \
+    cd tacopie && \
+    git fetch origin pull/5/head:cmake-fixes && \
+    git checkout cmake-fixes && \cd .. && \
+    mkdir -p build && cd build && \
+    cmake .. -DCMAKE_BUILD_TYPE=Release && \
+    make -j30 && make install
+
 # RUN cd /root/Sundial-Private/src && make 2> /sundial_make.log
 
-# export PKG_CONFIG_PATH=/root/grpc/third_party/re2:/root/grpc/third_party/bloaty/third_party/re2:$PKG_CONFIG_PATH
+# make clean && > /root/Sundial-Private/log/sundial_make.log && cd /root/Sundial-Private/src && make &> /root/Sundial-Private/log/sundial_make.log
