@@ -127,4 +127,7 @@ RUN cd /etc/ld.so.conf.d && echo "$/root/Sundial-Private/src/libs/" | sudo tee -
     /sbin/ldconfig
 
 RUN cd /root/Sundial-Private && python3 install.py install_local 0 2> /install_local.log
+# RUN cd /root/Sundial-Private/src/proto && protoc --grpc_out=../transport/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` --cpp_out=../transport sundial.proto
 # RUN cd /root/Sundial-Private/src && make 2> /sundial_make.log
+
+# export PKG_CONFIG_PATH=/root/grpc/third_party/re2:/root/grpc/third_party/bloaty/third_party/re2:$PKG_CONFIG_PATH
