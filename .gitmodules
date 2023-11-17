@@ -1,6 +1,6 @@
-[submodule "Sundial-Private"]
-	path = Sundial-Private
-	url = https://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@github.com/CloudOLTP/Sundial-Private.git
 [submodule "pregresql"]
 	path = pregresql
 	url = https://github.com/taabishm2/pregresql.git
+[submodule "Sundial-Private"]
+	path = Sundial-Private
+	url = https://github.com/SaanidhiArora/Sundial-Private.git
