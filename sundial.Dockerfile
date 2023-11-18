@@ -129,16 +129,10 @@ RUN cd /etc/ld.so.conf.d && echo "$/root/Sundial-Private/src/libs/" | sudo tee -
 RUN cd /root/Sundial-Private && python3 install.py install_local 0 2> /install_local.log
 RUN cd /root/Sundial-Private/src/proto && protoc --grpc_out=../transport/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` --cpp_out=../transport sundial.proto
 # Setup cpp_redis
-RUN cd /root/Sundial-Private/ && git submodule init && git submodule update && \
-    cd /root/Sundial-Private/cpp_redis && \
-    git reset --hard ab5ea8638bc51e3d407b0045aceb5c5fd3218aa0 && \
-    git submodule init && git submodule update && \
-    cd tacopie && \
-    git fetch origin pull/5/head:cmake-fixes && \
-    git checkout cmake-fixes && \cd .. && \
+RUN cd /root/Sundial-Private/cpp_redis && \
     mkdir -p build && cd build && \
     cmake .. -DCMAKE_BUILD_TYPE=Release && \
-    make -j30 && make install
+    make && make install
 
 # RUN cd /root/Sundial-Private/src && make 2> /sundial_make.log
 
