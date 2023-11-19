@@ -20,7 +20,6 @@ RUN apt-get update && \
 
 COPY Sundial-Private /root/Sundial-Private
 
-
 RUN pip3 install --upgrade pip && pip3 install pandas && \ 
     apt update && \
     echo "set number" > ~/.vimrc
@@ -96,6 +95,14 @@ RUN mkdir -p "/root/grpc/third_party/zlib/cmake/build" && \
     make && \
     make -j30 install
 
+# Install upb
+RUN cd /root/grpc/third_party && \
+    git clone https://github.com/Microsoft/vcpkg.git && \
+    cd vcpkg && \
+    ./bootstrap-vcpkg.sh && \
+    ./vcpkg integrate install && \
+    ./vcpkg install upb
+
 # Install gRPC
 RUN cd /root/grpc && mkdir -p "cmake/build" && \
     cd cmake/build && \
@@ -127,8 +134,7 @@ RUN cd /etc/ld.so.conf.d && echo "$/root/Sundial-Private/src/libs/" | sudo tee -
     /sbin/ldconfig
 
 RUN cd /root/Sundial-Private && python3 install.py install_local 0 2> /install_local.log
-RUN cd /root/Sundial-Private/src/proto && protoc --grpc_out=../transport/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` --cpp_out=../transport sundial.proto && \
-    cd /root/Sundial-Private/src/transport && mv sundial.pb.cc sundial.pb.cpp && mv sundial.grpc.pb.cc sundial.grpc.pb.cpp
+RUN cd /root/Sundial-Private/src/proto && protoc --grpc_out=../transport/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` --cpp_out=../transport sundial.proto
 
 # Setup cpp_redis
 RUN cd /root/Sundial-Private/cpp_redis && \
