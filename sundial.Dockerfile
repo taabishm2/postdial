@@ -127,13 +127,15 @@ RUN cd /etc/ld.so.conf.d && echo "$/root/Sundial-Private/src/libs/" | sudo tee -
     /sbin/ldconfig
 
 RUN cd /root/Sundial-Private && python3 install.py install_local 0 2> /install_local.log
-RUN cd /root/Sundial-Private/src/proto && protoc --grpc_out=../transport/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` --cpp_out=../transport sundial.proto
+RUN cd /root/Sundial-Private/src/proto && protoc --grpc_out=../transport/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` --cpp_out=../transport sundial.proto && \
+    cd /root/Sundial-Private/src/transport && mv sundial.pb.cc sundial.pb.cpp && mv sundial.grpc.pb.cc sundial.grpc.pb.cpp
+
 # Setup cpp_redis
 RUN cd /root/Sundial-Private/cpp_redis && \
     mkdir -p build && cd build && \
     cmake .. -DCMAKE_BUILD_TYPE=Release && \
     make && make install
 
-# RUN cd /root/Sundial-Private/src && make 2> /sundial_make.log
+RUN cd /root/Sundial-Private/ && ./compile.sh 2> /sundial_compile.log
 
 # make clean && > /root/Sundial-Private/log/sundial_make.log && cd /root/Sundial-Private/src && make &> /root/Sundial-Private/log/sundial_make.log
