@@ -20,7 +20,6 @@ def run():
         100,string,F6
         100,string,F7
         100,string,F8
-        100,string,F9
 
     INDEX=MAIN_INDEX
     MAIN_TABLE,0"""

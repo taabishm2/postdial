@@ -113,7 +113,7 @@ RUN pip3 install --upgrade pip && pip3 install pandas && \
 
 COPY Sundial-Private /root/Sundial-Private
 
-RUN cd "/root/Sundial-Private" && python3 install.py config_local 0 2> /config_local.log \
+RUN cd "/root/Sundial-Private" && python3 install.py config_local 0 2> /config_local.log && \
     # Setup configs in .conf files
     cd /etc/ld.so.conf.d && echo "$/root/Sundial-Private/src/libs/" | sudo tee -a other.conf && \
     echo "/usr/local/lib" | sudo tee -a other.conf && \
@@ -130,7 +130,7 @@ RUN cd "/root/Sundial-Private" && python3 install.py config_local 0 2> /config_l
     ldconfig
 
 RUN cd /root/Sundial-Private && python3 install.py install_local 0 2> /install_local.log && \
-    cd /root/Sundial-Private/src/proto && protoc --grpc_out=../transport/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` --cpp_out=../transport sundial.proto && \
-    cd /root/Sundial-Private/ && ./compile.sh 2> /sundial_compile.log && 
+    cd /root/Sundial-Private/src/proto && protoc --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` --cpp_out=. postdial.proto && \
+    cd /root/Sundial-Private/ && ./compile.sh 2> /sundial_compile.log 
     
-RUN cd /root/Sundial-Private/src && make clean && make
+# RUN cd /root/Sundial-Private/src && make clean && make
