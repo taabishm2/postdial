@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+service Postdial {
+  rpc initSchemaRpc(InitSchemaRequest) returns (InitSchemaResponse) {}
+}
+
+// Init schema
+message InitSchemaRequest {
+  string schemaString = 1;
+}
+message InitSchemaResponse {
+  string message = 1;
+}

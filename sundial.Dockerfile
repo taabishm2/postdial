@@ -20,15 +20,15 @@ RUN apt-get update && \
 
 # Pip installs
 RUN pip3 install --upgrade pip && pip3 install pandas && \ 
-    echo "set number" > ~/.vimrc
+    echo "set number" > ~/.vimrc && \
     # update cmake
-RUN cd /root && \
+    cd /root && \
     mkdir -p $MY_INSTALL_DIR && \
-    wget -q -O cmake-linux.sh https://github.com/Kitware/CMake/releases/download/v3.19.6/cmake-3.19.6-Linux-x86_64.sh
-RUN cd /root && sudo sh cmake-linux.sh -- --skip-license --prefix=$MY_INSTALL_DIR && \
-    rm cmake-linux.sh 
+    wget -q -O cmake-linux.sh https://github.com/Kitware/CMake/releases/download/v3.19.6/cmake-3.19.6-Linux-x86_64.sh && \
+    cd /root && sudo sh cmake-linux.sh -- --skip-license --prefix=$MY_INSTALL_DIR && \
+    rm cmake-linux.sh && \
     # setup a version of jemalloc with profiling enabled
-RUN cd /root && \
+    cd /root && \
     git clone https://github.com/jemalloc/jemalloc.git && \
     cd jemalloc && \
     ./autogen.sh --enable-prof && \
@@ -108,7 +108,6 @@ RUN cd /root && \
     git clone https://github.com/redis/redis.git && \
     cd redis && \
     make && \
-    cp /root/Sundial-Private/tools/redis.conf ./  && \
     cd /root  && \
     mkdir redis_data/
 
