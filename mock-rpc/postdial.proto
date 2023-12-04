@@ -1,43 +1,75 @@
 syntax = "proto3";
 
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.helloworld";
+option java_outer_classname = "HelloWorldProto";
+option objc_class_prefix = "HLW";
+
+package postgresGRPC;
+
+// The greeting service definition.
+service Postdial {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply) {}
+  rpc sendPlan (PlannedStmtRPC) returns (HelloReply) {}
+  rpc executeOnServer(PlannedStmt) returns (HelloReply) {}
+
+  rpc RunSelect (RunSelectRequest) returns (Response);
+  rpc RunInserts (RunInsertsRequest) returns (Response);
+  rpc InitSchema (InitSchemaRequest) returns (Response);
+}
+
 message StringList {
   repeated string values = 1;
 }
 
-// Define a message for column details
-message ColumnDetailRequest {
-    string name = 1;
-    int32 size = 2;
-    string type = 3; // DataType as string (CHAR, VARCHAR, INTEGER, etc.)
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
 }
 
-// Request message for init_schema
-message InitSchemaRequest {
-    string table_name = 1;
-    repeated ColumnDetailRequest columns = 2;
-    string key_column_name = 3; // Optional, can be empty
+// The response message containing the greetings
+message HelloReply {
+  string message = 1;
 }
 
-// Request message for run_inserts
-message RunInsertsRequest {
-    repeated string column_names = 1;
-    repeated StringList input_rows = 2;
+message PlannedStmtRPC {
+  int32 plan_width = 1;
 }
+
+message PlannedStmt {
+  string planTree = 1;
+}
+
+////////////////////////////////////////////////
 
 // Request message for run_select
 message RunSelectRequest {
-    repeated string column_names = 1;
-    int32 search_key = 2;
+  repeated string column_names = 1;
+  int32 search_key = 2;
 }
 
 // Response message (can be expanded as needed)
 message Response {
-    string message = 1;
+  string message = 1;
 }
 
-// Service definition
-service Postdial {
-    rpc InitSchema (InitSchemaRequest) returns (Response);
-    rpc RunInserts (RunInsertsRequest) returns (Response);
-    rpc RunSelect (RunSelectRequest) returns (Response);
+// Request message for run_inserts
+message RunInsertsRequest {
+  repeated string column_names = 1;
+  repeated StringList input_rows = 2;
+}
+
+// Define a message for column details
+message ColumnDetailRequest {
+  string name = 1;
+  int32 size = 2;
+  string type = 3; // DataType as string (CHAR, VARCHAR, INTEGER, etc.)
+}
+
+// Request message for init_schema
+message InitSchemaRequest {
+  string table_name = 1;
+  repeated ColumnDetailRequest columns = 2;
+  string key_column_name = 3; // Optional, can be empty
 }
