@@ -1,13 +1,43 @@
 syntax = "proto3";
 
-service Postdial {
-  rpc initSchemaRpc(InitSchemaRequest) returns (InitSchemaResponse) {}
+message StringList {
+  repeated string values = 1;
 }
 
-// Init schema
-message InitSchemaRequest {
-  string schemaString = 1;
+// Define a message for column details
+message ColumnDetailRequest {
+    string name = 1;
+    int32 size = 2;
+    string type = 3; // DataType as string (CHAR, VARCHAR, INTEGER, etc.)
 }
-message InitSchemaResponse {
-  string message = 1;
+
+// Request message for init_schema
+message InitSchemaRequest {
+    string table_name = 1;
+    repeated ColumnDetailRequest columns = 2;
+    string key_column_name = 3; // Optional, can be empty
+}
+
+// Request message for run_inserts
+message RunInsertsRequest {
+    repeated string column_names = 1;
+    repeated StringList input_rows = 2;
+}
+
+// Request message for run_select
+message RunSelectRequest {
+    repeated string column_names = 1;
+    int32 search_key = 2;
+}
+
+// Response message (can be expanded as needed)
+message Response {
+    string message = 1;
+}
+
+// Service definition
+service Postdial {
+    rpc InitSchema (InitSchemaRequest) returns (Response);
+    rpc RunInserts (RunInsertsRequest) returns (Response);
+    rpc RunSelect (RunSelectRequest) returns (Response);
 }
